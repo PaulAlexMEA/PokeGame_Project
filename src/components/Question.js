@@ -24,8 +24,10 @@ const Question = ({ question, pokemon, options, onAnswer, correctAnswer, resetFl
   return (
     <div>
       <h3 className="question-container">{question}</h3>
-      <img src={pokemon.sprites.front_default} alt={pokemon.name} />
-      <div>
+      <div className="pokemon-image-container">
+      <img src={pokemon.sprites.front_default} alt={pokemon.name} className="pokemon-image"/>
+      </div>
+      <div className="buttons-container">
         {options.map((option, index) => (
           <button
             key={index}

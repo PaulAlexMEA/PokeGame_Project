@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
+import { useState, useEffect } from 'react';
 import { getPokemon } from '../services/pokeApi';
 import Question from './Question';
 import StartButton from './StartButton';
 
-const PokemonQuiz = () => {
+function PokemonQuiz() {
+  // Définition des états avec useState
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [questions, setQuestions] = useState([]);
   const [score, setScore] = useState(0);
@@ -12,8 +14,9 @@ const PokemonQuiz = () => {
   const [selectedOption, setSelectedOption] = useState(null);
   const [resetFlag, setResetFlag] = useState(false);
 
+  // useEffect pour charger les questions au démarrage du jeu
   useEffect(() => {
-    const loadQuestions = async () => {
+    async function loadQuestions() {
       let loadedQuestions = [];
       for (let i = 1; i <= 6; i++) {
         const pokemonId = Math.floor(Math.random() * 807) + 1;
@@ -30,35 +33,36 @@ const PokemonQuiz = () => {
     }
   }, [gameStarted]);
 
-  const generateQuestion = (pokemon, questionType) => {
+  // Fonction pour générer une question
+  function generateQuestion(pokemon, questionType) {
     const typeOptions = ['fire', 'water', 'grass', 'electric', 'psychic', pokemon.types[0].type.name];
     const weightOptions = ['light', 'medium', 'heavy', 'very heavy'];
     const heightOptions = ['short', 'medium', 'tall', 'very tall'];
     const abilityOptions = pokemon.abilities.map(a => a.ability.name);
 
     switch (questionType) {
-      case 0: // Type principal
+      case 0: // Question sur le type
         return {
           pokemon: pokemon,
           questionText: "Quel est le type principal de ce Pokémon ?",
           correctAnswer: pokemon.types[0].type.name,
           options: shuffleArray(typeOptions)
         };
-      case 1: // Poids
+      case 1: // Question sur le poids
         return {
           pokemon: pokemon,
           questionText: "Quel est le poids de ce Pokémon ?",
           correctAnswer: getWeightCategory(pokemon.weight),
           options: shuffleArray(weightOptions)
         };
-      case 2: // Taille
+      case 2: // Question sur la taille
         return {
           pokemon: pokemon,
           questionText: "Quelle est la taille de ce Pokémon ?",
           correctAnswer: getHeightCategory(pokemon.height),
           options: shuffleArray(heightOptions)
         };
-      case 3: // Capacité spéciale
+      case 3: // Question sur la capacité
         const randomAbility = abilityOptions[Math.floor(Math.random() * abilityOptions.length)];
         return {
           pokemon: pokemon,
@@ -66,7 +70,7 @@ const PokemonQuiz = () => {
           correctAnswer: randomAbility,
           options: shuffleArray(abilityOptions)
         };
-      default:
+      default: // Question par défaut
         return {
           pokemon: pokemon,
           questionText: "Quel est le type principal de ce Pokémon ?",
@@ -76,30 +80,36 @@ const PokemonQuiz = () => {
     }
   };
 
-  const shuffleArray = (array) => {
+  // Fonction pour mélanger un tableau (Shuffle)
+  function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
-      [array[i], array[j]] = [array[j], array[i]];
+      const temp = array[i];
+      array[i] = array[j];
+      array[j] = temp;
     }
     return array;
   };
 
-  const getWeightCategory = (weight) => {
-    const weightInKg = weight / 10; // Convertir de hg en kg
+  // Fonction pour obtenir la catégorie de poids
+  function getWeightCategory(weight) {
+    const weightInKg = weight / 10;
     if (weightInKg < 10) return 'light';
     if (weightInKg < 50) return 'medium';
     if (weightInKg < 100) return 'heavy';
     return 'very heavy';
   };
 
-  const getHeightCategory = (height) => {
-    const heightInM = height / 10; // Convertir de dm en m
+  // Fonction pour obtenir la catégorie de taille
+  function getHeightCategory(height) {
+    const heightInM = height / 10;
     if (heightInM < 1) return 'short';
     if (heightInM < 2) return 'medium';
     return 'tall';
   };
 
-  const handleAnswer = (option) => {
+  // Gestion de la réponse sélectionnée
+  function handleAnswer(option) {
     setSelectedOption(option);
     const currentQuestion = questions[currentQuestionIndex];
     if (option === currentQuestion.correctAnswer) {
@@ -115,11 +125,12 @@ const PokemonQuiz = () => {
       } else {
         setGameOver(true);
       }
-      setSelectedOption(null); // Réinitialiser pour la nouvelle question
-    }, 1500); // Délai d'une seconde
+      setSelectedOption(null);
+    }, 1500);
   };
 
-  const restartGame = () => {
+  // Réinitialisation du jeu
+  function restartGame() {
     setGameStarted(false);
     setGameOver(false);
     setScore(0);
@@ -128,25 +139,30 @@ const PokemonQuiz = () => {
     setSelectedOption(null);
   };
 
+  // Affichage du bouton de démarrage si le jeu n'a pas commencé
   if (!gameStarted) {
     return <StartButton onStart={() => setGameStarted(true)} />;
   }
 
+  // Affichage des résultats si le jeu est terminé
   if (gameOver) {
     return (
       <div>
         <h2>Votre score final est : {score}</h2>
-        <button onClick={restartGame}>Recommencer le jeu</button>
+        <button className="start-button" onClick={restartGame}>Recommencer le jeu</button>
       </div>
     );
   }
 
+  // Message de chargement pendant le chargement des questions
   if (questions.length === 0) {
     return <div>Chargement des questions...</div>;
   }
 
+  // Récupération de la question actuelle
   const currentQuestion = questions[currentQuestionIndex];
 
+  // Affichage de la question actuelle
   return (
     <div>
       <h2>Votre score : {score}</h2>

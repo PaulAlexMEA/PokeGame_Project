@@ -6,7 +6,7 @@ const PokemonViewer = () => {
 
   useEffect(() => {
     const fetchPokemon = async () => {
-      const data = await getPokemon(1); // 1 est l'ID pour Bulbasaur
+      const data = await getPokemon(1); 
       setPokemon(data);
     };
 

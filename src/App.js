@@ -1,12 +1,12 @@
 import React from 'react';
 import './App.css';
-import PokemonQuiz from './components/PokemonQuiz'; // Assurez-vous que le chemin d'accès est correct
+import PokemonQuiz from './components/PokemonQuiz'; 
 
 function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <h1>PokeGame</h1>
+        <h1 >PokeGame</h1>
         <PokemonQuiz />
       </header>
     </div>
