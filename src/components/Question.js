@@ -3,11 +3,12 @@ import React, { useState, useEffect } from 'react';
 const Question = ({ question, pokemon, options, onAnswer, correctAnswer, resetFlag }) => {
   const [selectedOption, setSelectedOption] = useState(null);
 
-  // Réinitialiser selectedOption chaque fois que la question change
+   // Réinitialiser 'selectedOption' chaque fois que la question ou resetFlag change
   useEffect(() => {
     setSelectedOption(null);
   }, [question, resetFlag]);
 
+  // Gestion du choix de réponse
   const handleClick = (option) => {
     setSelectedOption(option);
     onAnswer(option);
@@ -21,6 +22,7 @@ const Question = ({ question, pokemon, options, onAnswer, correctAnswer, resetFl
     return "button";
   };
 
+  // Rendu
   return (
     <div>
       <h3 className="question-container">{question}</h3>
